@@ -37,19 +37,33 @@ const App = () => {
   };
 
   const handleSend = async () => {
-    if (!subjectBox || !placementPoint) return;
+    console.log('Subject Box:', subjectBox);
+    console.log('Placement Point:', placementPoint);
+
+    if (!subjectBox || !placementPoint) {
+      console.log('Missing subjectBox or placementPoint');
+      return;
+    }
     const adjustPayload = {
       sourceImageFilename: sourceFilename,
       targetImageFilename: targetFilename,
       outputImageFilename: 'output.png',
       sourceImage: { width: 796, height: 452 },
-      subjectBox,
+      subjectBox: {
+        x: Math.round(subjectBox.x),
+        y: Math.round(subjectBox.y),
+        width: Math.round(subjectBox.width),
+        height: Math.round(subjectBox.height)
+      },
       targetImage: { width: 452, height: 796 },
-      placementPoint
-    };
+      placementPoint: {
+        x: Math.round(placementPoint.x),
+        y: Math.round(placementPoint.y)
+      }
+    };    
     console.log('Payload:', adjustPayload);
     const adjustRes = await axios.post('http://localhost:8000/adjust-image', adjustPayload);
-    setOutputImageUrl('http://localhost:8000/' + adjustRes.data.outputImagePath);
+    setOutputImageUrl('http://localhost:8000/output-image/' + adjustRes.data.outputImagePath.split('/').pop());
   };
 
   return (
