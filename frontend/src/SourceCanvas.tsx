@@ -25,7 +25,7 @@ const SourceCanvas = ({ file, setSubjectBox }: { file: File; setSubjectBox: Func
   }, [image]);
 
   return (
-    <div style={{ width: '400px', height: '300px', overflow: 'auto', border: '1px solid gray' }}>
+    <div className="canvas-wrapper">
       <Stage width={image?.width || 0} height={image?.height || 0}>
         <Layer>
           {image && <KonvaImage image={image} />}

@@ -4,11 +4,13 @@ import { Stage, Layer, Rect, Image as KonvaImage } from 'react-konva';
 const TargetCanvas = ({
   file,
   placementPoint,
-  setPlacementPoint
+  setPlacementPoint,
+  subjectBox
 }: {
   file: File;
   placementPoint: any;
   setPlacementPoint: Function;
+  subjectBox: { x: number; y: number; width: number; height: number } | null;
 }) => {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
 
@@ -19,7 +21,7 @@ const TargetCanvas = ({
   }, [file]);
 
   return (
-    <div style={{ width: '400px', height: '300px', overflow: 'auto', border: '1px solid gray' }}>
+    <div className="canvas-wrapper">
       <Stage width={image?.width || 0} height={image?.height || 0} onClick={(e) => {
         const stage = e.target.getStage();
         const pointer = stage?.getPointerPosition();
@@ -29,14 +31,17 @@ const TargetCanvas = ({
       }}>
         <Layer>
           {image && <KonvaImage image={image} />}
-          {placementPoint && (
+          {placementPoint && subjectBox && (
             <Rect
               x={placementPoint.x}
               y={placementPoint.y}
-              width={50}
-              height={50}
+              width={subjectBox.width}
+              height={subjectBox.height}
               fill="rgba(255,0,0,0.5)"
               draggable
+              onDragEnd={(e) =>
+                setPlacementPoint({ x: e.target.x(), y: e.target.y() })
+              }
             />
           )}
         </Layer>

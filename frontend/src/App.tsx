@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
-import { Container, Row, Col, Button, Form } from 'react-bootstrap';
+import { Container, Button, Form, Tabs, Tab } from 'react-bootstrap';
 import SourceCanvas from './SourceCanvas';
 import TargetCanvas from './TargetCanvas';
 import axios from 'axios';
+import './App.css'; // For full height styling
 
 const App = () => {
   const [sourceFile, setSourceFile] = useState<File | null>(null);
@@ -37,13 +37,7 @@ const App = () => {
   };
 
   const handleSend = async () => {
-    console.log('Subject Box:', subjectBox);
-    console.log('Placement Point:', placementPoint);
-
-    if (!subjectBox || !placementPoint) {
-      console.log('Missing subjectBox or placementPoint');
-      return;
-    }
+    if (!subjectBox || !placementPoint) return;
     const adjustPayload = {
       sourceImageFilename: sourceFilename,
       targetImageFilename: targetFilename,
@@ -60,41 +54,63 @@ const App = () => {
         x: Math.round(placementPoint.x),
         y: Math.round(placementPoint.y)
       }
-    };    
-    console.log('Payload:', adjustPayload);
+    };
     const adjustRes = await axios.post('http://localhost:8000/adjust-image', adjustPayload);
-    setOutputImageUrl('http://localhost:8000/output-image/' + adjustRes.data.outputImagePath.split('/').pop());
+    const timestamp = new Date().getTime();
+    setOutputImageUrl(
+      'http://localhost:8000/output-image/' +
+      adjustRes.data.outputImagePath.split('/').pop() +
+      '?t=' + timestamp
+    );
   };
 
   return (
-    <Container>
-      <h1 className="mt-4">Image Adjuster UI</h1>
-      <Row className="mt-4">
-        <Col>
-          <Form.Group controlId="formSourceImage">
-            <Form.Label>Upload Source Image</Form.Label>
-            <Form.Control type="file" onChange={handleSourceUpload} />
-          </Form.Group>
-        </Col>
-        <Col>
-          <Form.Group controlId="formTargetImage">
-            <Form.Label>Upload Target Image</Form.Label>
-            <Form.Control type="file" onChange={handleTargetUpload} />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row className="mt-4">
-        <Col>{sourceFile && <SourceCanvas file={sourceFile} setSubjectBox={setSubjectBox} />}</Col>
-        <Col>{targetFile && <TargetCanvas file={targetFile} placementPoint={placementPoint} setPlacementPoint={setPlacementPoint} />}</Col>
-      </Row>
-      <Row className="mt-4">
-        <Col><Button onClick={handleSend}>Send to Backend</Button></Col>
-      </Row>
-      {outputImageUrl && (
-        <Row className="mt-4">
-          <Col><h3>Output Image</h3><img src={outputImageUrl} alt="Output" style={{ maxWidth: '100%' }} /></Col>
-        </Row>
-      )}
+    <Container fluid className="app-container">
+      <h1 className="mt-2 text-center">Image Adjuster UI</h1>
+      <Tabs defaultActiveKey="source" id="image-tabs" className="mb-3" fill>
+        <Tab eventKey="source" title="Source">
+          <div className="tab-pane-container">
+            <Form.Group controlId="formSourceImage" className="mb-3">
+              <Form.Label>Upload Source Image</Form.Label>
+              <Form.Control type="file" onChange={handleSourceUpload} />
+            </Form.Group>
+            {sourceFile && <SourceCanvas file={sourceFile} setSubjectBox={setSubjectBox} />}
+          </div>
+        </Tab>
+        <Tab eventKey="target" title="Target">
+          <div className="tab-pane-container">
+            <Form.Group controlId="formTargetImage" className="mb-3">
+              <Form.Label>Upload Target Image</Form.Label>
+              <Form.Control type="file" onChange={handleTargetUpload} />
+            </Form.Group>
+            {targetFile && <TargetCanvas
+              file={targetFile}
+              placementPoint={placementPoint}
+              setPlacementPoint={setPlacementPoint}
+              subjectBox={subjectBox}
+            />
+            }
+          </div>
+        </Tab>
+        <Tab eventKey="output" title="Output">
+          <div className="tab-pane-container">
+            <Button onClick={handleSend} className="mb-3">Send to Backend</Button>
+            {outputImageUrl && (
+              <div className="output-image-container">
+                <img src={outputImageUrl}
+                  alt="Output"
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '80vh',
+                    objectFit: 'contain',
+                    border: '1px solid gray'
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </Tab>
+      </Tabs>
     </Container>
   );
 };

@@ -1,0 +1,38 @@
+html, body, #root, .app-container {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .tab-pane-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 160px); /* Adjust header + tabs height */
+    overflow: hidden;
+  }
+  
+  .output-image-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+  }
+  
+  .tab-pane-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Important for flex children to grow properly */
+  }
+  
+  .canvas-wrapper {
+    flex: 1;
+    overflow: auto;
+    border: 1px solid gray;
+    min-height: 0; /* Prevents overflow issues */
+  }
+    
