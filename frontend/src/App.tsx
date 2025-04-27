@@ -5,6 +5,8 @@ import TargetCanvas from './TargetCanvas';
 import axios from 'axios';
 import './App.css'; // For full height styling
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 const App = () => {
   const [sourceFile, setSourceFile] = useState<File | null>(null);
   const [targetFile, setTargetFile] = useState<File | null>(null);
@@ -20,7 +22,7 @@ const App = () => {
       setSourceFile(file);
       const formData = new FormData();
       formData.append('file', file);
-      const res = await axios.post('http://localhost:8000/upload-image', formData);
+      const res = await axios.post(`${backendUrl}/upload-image`, formData);
       setSourceFilename(res.data.filename);
     }
   };
@@ -31,7 +33,7 @@ const App = () => {
       setTargetFile(file);
       const formData = new FormData();
       formData.append('file', file);
-      const res = await axios.post('http://localhost:8000/upload-image', formData);
+      const res = await axios.post(`${backendUrl}/upload-image`, formData);
       setTargetFilename(res.data.filename);
     }
   };
@@ -55,10 +57,10 @@ const App = () => {
         y: Math.round(placementPoint.y)
       }
     };
-    const adjustRes = await axios.post('http://localhost:8000/adjust-image', adjustPayload);
+    const adjustRes = await axios.post(`${backendUrl}/adjust-image`, adjustPayload);
     const timestamp = new Date().getTime();
     setOutputImageUrl(
-      'http://localhost:8000/output-image/' +
+      `${backendUrl}/output-image/` +
       adjustRes.data.outputImagePath.split('/').pop() +
       '?t=' + timestamp
     );

@@ -15,7 +15,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_BACKEND_URL: http://image-adjuster-backend:8000  # Passed to Vite during build
+        VITE_BACKEND_URL: http://localhost:8000  # Passed to Vite during build
     container_name: image-adjuster-frontend
     ports:
       - "3000:80"

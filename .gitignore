@@ -27,3 +27,4 @@
 .env
 .DS_Store
 package-lock.json
+frontend/.env.local
