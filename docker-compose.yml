@@ -1,25 +1,33 @@
-version: '3.8'
-
 services:
-  backend:
-    build: ./backend
+  image-adjuster-backend:
+    build:
+      context: ./backend
+    container_name: image-adjuster-backend
     ports:
       - "8000:8000"
     volumes:
-      - ./backend/uploads:/app/uploads
-      - ./backend/outputs:/app/outputs
+      - image-adjuster-uploads:/app/uploads
+      - image-adjuster-outputs:/app/outputs
     networks:
-      - app-network
+      - image-adjuster-network
 
-  frontend:
-    build: ./frontend
+  image-adjuster-frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_BACKEND_URL: http://image-adjuster-backend:8000  # Passed to Vite during build
+    container_name: image-adjuster-frontend
     ports:
       - "3000:80"
     depends_on:
-      - backend
+      - image-adjuster-backend
     networks:
-      - app-network
+      - image-adjuster-network
+
+volumes:
+  image-adjuster-uploads:
+  image-adjuster-outputs:
 
 networks:
-  app-network:
+  image-adjuster-network:
     driver: bridge
