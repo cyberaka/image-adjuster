@@ -1,11 +1,11 @@
-name: Build and Push Docker Images
+name: Build, Push, and Deploy Docker Images
 
 on:
   push:
     branches: [master]
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
 
     env:
@@ -26,5 +26,25 @@ jobs:
 
       - name: Build and push frontend
         run: |
-          docker build --build-arg VITE_BACKEND_URL=http://ajitkids.com:8000 -t cyberaka/image-adjuster-frontend:latest ./frontend
+          docker build --build-arg VITE_BACKEND_URL=https://image.ajitkids.com/api -t cyberaka/image-adjuster-frontend:latest ./frontend
           docker push cyberaka/image-adjuster-frontend:latest
+
+      - name: Deploy to Ubuntu server via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker pull cyberaka/image-adjuster-backend:latest
+            docker pull cyberaka/image-adjuster-frontend:latest
+
+            docker stop image-adjuster-backend || true
+            docker rm image-adjuster-backend || true
+
+            docker stop image-adjuster-frontend || true
+            docker rm image-adjuster-frontend || true
+
+            docker run -d --name image-adjuster-backend -p 8000:8000 -v image-adjuster-uploads:/app/uploads -v image-adjuster-outputs:/app/outputs cyberaka/image-adjuster-backend:latest
+
+            docker run -d --name image-adjuster-frontend -p 3000:80 cyberaka/image-adjuster-frontend:latest
