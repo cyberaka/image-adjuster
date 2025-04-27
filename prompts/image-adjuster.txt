@@ -1,0 +1,34 @@
+Read the attached image-adjuster.md specification.
+
+Based on this, generate a complete TypeScript program using the Sharp library that:
+
+- Loads a source image and a target image from file paths.
+
+- Calculates the crop box for the source image based on the subject bounding box and the target image dimensions, following the expansion logic outlined.
+
+- Adjusts the placement point dynamically for the target image based on the expanded crop.
+
+- Crops the source image according to the calculated crop box.
+
+- Places the cropped region onto the target image at the adjusted placement point.
+
+- Saves the final composited target image as a new file.
+
+- Logs the crop box and placement box to the console.
+
+Follow these constraints:
+
+- Do not scale or distort the subject (maintain its aspect ratio).
+
+- Ensure the crop region stays within source image bounds.
+
+- Ensure the placement box is adjusted correctly if the crop region is expanded beyond the original subject box.
+
+The program should:
+
+- Use TypeScript with Sharp for image manipulation.
+
+- Include error handling for invalid crop/placement regions.
+
+- Have clear function separation (e.g., calculate crop/placement, perform image manipulation).
+
