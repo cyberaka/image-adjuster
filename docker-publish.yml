@@ -1,0 +1,30 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        run: echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+
+      - name: Build and push backend
+        run: |
+          docker build -t cyberaka/image-adjuster-backend:latest ./backend
+          docker push cyberaka/image-adjuster-backend:latest
+
+      - name: Build and push frontend
+        run: |
+          docker build --build-arg VITE_BACKEND_URL=http://ajitkids.com:8000 -t cyberaka/image-adjuster-frontend:latest ./frontend
+          docker push cyberaka/image-adjuster-frontend:latest
