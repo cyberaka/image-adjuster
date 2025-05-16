@@ -1,0 +1,44 @@
+{
+  "subject_image": "subject.png",
+  "default_position": "center",
+  "format_positions": {
+    "Medium Rectangle": "center",
+    "Large Rectangle": "bottom-right",
+    "Leaderboard": "right",
+    "Mobile Leaderboard": "right",
+    "Wide Skyscraper": {
+      "position": [
+        0.5,
+        0.2
+      ],
+      "comment": "Custom position: centered horizontally, near the top"
+    },
+    "Half Page": {
+      "position": [
+        0.8,
+        0.3
+      ],
+      "comment": "Custom position: right side, upper third"
+    },
+    "Banner": "top-left",
+    "Square": "bottom-left",
+    "Small Square": "middle-right",
+    "Vertical Rectangle": {
+      "position": [
+        0.5,
+        0.7
+      ],
+      "comment": "Custom position: centered horizontally, lower third"
+    }
+  },
+  "output_settings": {
+    "output_dir": "output_images",
+    "html_output": "iab_gallery.html",
+    "background_color": [
+      255,
+      255,
+      255,
+      0
+    ]
+  }
+}
