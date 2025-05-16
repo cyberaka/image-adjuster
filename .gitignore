@@ -28,3 +28,4 @@
 .DS_Store
 package-lock.json
 frontend/.env.local
+output_images
